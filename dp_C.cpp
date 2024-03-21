@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 
-const int kMax = 1e17;
+const int kMax = 1e8;
 const int kLg = 20;
 
 void Solve() {
