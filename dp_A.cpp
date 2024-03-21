@@ -1,64 +1,35 @@
 #include <algorithm>
-#include <bitset>
-#include <chrono>
-#include <cmath>
-#include <cstring>
-#include <deque>
 #include <iomanip>
 #include <iostream>
-#include <map>
-#include <numeric>
-#include <queue>
-#include <random>
-#include <set>
-#include <stack>
-#include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <utility>
 #include <vector>
 
-#define debug(a) std::cerr << #a << ": " << a << '\n';
-#define aLl(a) (a).begin(), (a).end()
-#define v std::vector
-
-using Ll = long long;
-using Str = std::string;
-using Pll = std::pair<Ll, Ll>;
-
-// const Ll kMax = 1e17;
-const Ll kMin = -1e17;
-// const Ll kMod = 1e9 + 7;
-// const int kMaxn = 1e5;
-// const int kLg = 20;
-
-std::mt19937_64 rnd(
-    std::chrono::steady_clock::now().time_since_epoch().count());
+const int kMin = -1e8;
 
 struct Seg {
-  v<Pll> tree;
-  Ll size = 1;
+  std::vector<std::pair<int, int>> tree;
+  int size = 1;
 
-  Seg(Ll amount) {
+  Seg(int amount) {
     while (size < amount) {
       size *= 2;
     }
     tree.resize(size * 2 - 1, {0, -1});
   }
 
-  Pll Find(Ll l_find, Ll r_find, Ll left, Ll right, Ll now) {
+  std::pair<int, int> Find(int l_find, int r_find, int left, int right, int now) {
     if (left >= r_find || right <= l_find) {
       return {0, -1};
     }
     if (left >= l_find && right <= r_find) {
       return tree[now];
     }
-    Ll mid = left + (right - left) / 2;
+    int mid = left + (right - left) / 2;
     return std::max(Find(l_find, r_find, left, mid, now * 2 + 1),
                     Find(l_find, r_find, mid, right, now * 2 + 2));
   }
 
-  void Set(Ll pos, Pll val, Ll left, Ll right, Ll now) {
+  void Set(int pos, std::pair<int, int> val, int left, int right, int now) {
     if (left > pos || right <= pos) {
       return;
     }
@@ -66,7 +37,7 @@ struct Seg {
       tree[now] = std::max(val, tree[now]);
       return;
     }
-    Ll mid = left + (right - left) / 2;
+    int mid = left + (right - left) / 2;
     Set(pos, val, left, mid, now * 2 + 1);
     Set(pos, val, mid, right, now * 2 + 2);
     tree[now] = std::max(tree[now * 2 + 1], tree[now * 2 + 2]);
@@ -74,30 +45,30 @@ struct Seg {
 };
 
 void Solve() {
-  Ll amount;
+  int amount;
   std::cin >> amount;
-  std::vector<Ll> array(amount);
-  std::vector<Ll> values;
+  std::vector<int> array(amount);
+  std::vector<int> values;
   for (int i = 0; i < amount; ++i) {
     std::cin >> array[i];
     values.push_back(array[i]);
   }
-  std::sort(aLl(values));
-  values.resize(std::unique(aLl(values)) - values.begin());
-  std::vector<Ll> dp(amount, 1);
-  std::vector<Ll> prev(amount, -1);
+  std::sort(values.begin(), values.end());
+  values.resize(std::unique(values.begin(), values.end()) - values.begin());
+  std::vector<int> dp(amount, 1);
+  std::vector<int> prev(amount, -1);
   Seg tree(values.size());
   for (int i = 0; i < amount; ++i) {
-    Ll position = std::lower_bound(values.begin(), values.end(), array[i]) -
+    int position = std::lower_bound(values.begin(), values.end(), array[i]) -
                   values.begin();
-    Pll answer = tree.Find(position, tree.size, 0, tree.size, 0);
+    std::pair<int, int> answer = tree.Find(position, tree.size, 0, tree.size, 0);
     dp[i] = answer.first + 1;
     prev[i] = answer.second;
     tree.Set(position, {dp[i], i}, 0, tree.size, 0);
   }
-  Ll max = kMin;
-  Ll position = -1;
-  std::vector<Ll> answer;
+  int max = kMin;
+  int position = -1;
+  std::vector<int> answer;
   for (int i = 0; i < amount; ++i) {
     if (max < dp[i]) {
       max = dp[i];
@@ -121,7 +92,5 @@ int main() {
   std::cout.tie(0);
   const int kPrecision = 10;
   std::cout << std::fixed << std::setprecision(kPrecision);
-  /*std::freopen("bst.in", "r", stdin);
-  std::freopen("bst.out", "w", stdout);*/
   Solve();
 }
