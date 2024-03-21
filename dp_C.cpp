@@ -1,43 +1,14 @@
 #include <algorithm>
-#include <bitset>
-#include <chrono>
-#include <cmath>
-#include <cstring>
-#include <deque>
 #include <iomanip>
 #include <iostream>
-#include <map>
-#include <numeric>
-#include <queue>
-#include <random>
-#include <set>
-#include <stack>
-#include <string>
-#include <unordered_map>
-#include <unordered_set>
-#include <utility>
 #include <vector>
 
-#define debug(a) std::cerr << #a << ": " << a << '\n';
-#define all(a) (a).begin(), (a).end()
-#define v std::vector
-
-using Ll = long long;
-using Str = std::string;
-using Pll = std::pair<Ll, Ll>;
-
-const Ll kMax = 1e17;
-// const Ll kMin = -1e17;
-// const Ll kMod = 1e9 + 7;
-// const int kMaxn = 1e5;
-const Ll kLg = 20;
-
-std::mt19937_64 rnd(
-    std::chrono::steady_clock::now().time_since_epoch().count());
+const int kMax = 1e17;
+const int kLg = 20;
 
 void Solve() {
-  Ll floors;
-  Ll planes;
+  int floors;
+  int planes;
   std::cin >> floors >> planes;
   if (planes == 0) {
     if (floors != 1) {
@@ -47,8 +18,8 @@ void Solve() {
     }
     return;
   }
-  v<v<Ll> > dp(floors + 1, v<Ll>(std::min(planes, kLg) + 1, kMax));
-  v<v<Ll> > first(floors + 1, v<Ll>(std::min(planes, kLg) + 1, -1));
+  std::vector<std::vector<int> > dp(floors + 1, std::vector<int>(std::min(planes, kLg) + 1, kMax));
+  std::vector<std::vector<int> > first(floors + 1, std::vector<int>(std::min(planes, kLg) + 1, -1));
   for (int i = 0; i <= floors; ++i) {
     dp[i][1] = 1;
     first[i][1] = 1;
@@ -87,7 +58,5 @@ int main() {
   std::cout.tie(nullptr);
   const int kPrecision = 10;
   std::cout << std::fixed << std::setprecision(kPrecision);
-  /*std::freopen("bst.in", "r", stdin);
-  std::freopen("bst.out", "w", stdout);*/
   Solve();
 }
