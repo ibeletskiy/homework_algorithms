@@ -1,41 +1,12 @@
 #include <algorithm>
-#include <bitset>
-#include <chrono>
-#include <cmath>
-#include <cstring>
-#include <deque>
 #include <iomanip>
 #include <iostream>
-#include <map>
-#include <numeric>
-#include <queue>
-#include <random>
-#include <set>
-#include <stack>
-#include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <utility>
 #include <vector>
 
-#define debug(a) std::cerr << #a << ": " << a << '\n';
-#define all(a) (a).begin(), (a).end()
-#define v std::vector
+const int64_t kMod = 1e9 + 7;
 
-using Ll = long long;
-using Str = std::string;
-using Pll = std::pair<Ll, Ll>;
-
-// const Ll kMax = 1e17;
-// const Ll kMin = -1e17;
-const Ll kMod = 1e9 + 7;
-// const int kMaxn = 1e5;
-// const Ll kLg = 20;
-
-std::mt19937_64 rnd(
-    std::chrono::steady_clock::now().time_since_epoch().count());
-
-Ll Sum(Ll aa, Ll bb) {
+int64_t Sum(int64_t aa, int64_t bb) {
   aa += bb;
   if (aa >= kMod) {
     return aa - kMod;
@@ -43,7 +14,7 @@ Ll Sum(Ll aa, Ll bb) {
   return aa;
 }
 
-bool IsColumnCorrect(v<v<char>>& field, int column, int mask) {
+bool IsColumnCorrect(std::vector<std::vector<char>>& field, int column, int mask) {
   for (size_t i = 0; i < field.size(); ++i) {
     if (field[i][column] == '+' && (mask & (1 << i)) == 0) {
       return false;
@@ -69,8 +40,8 @@ int CreateMask(int mask, int length, int begin) {
   return now;
 }
 
-v<int> GetCorrectMasks(int mask, int length) {
-  v<int> answer;
+std::vector<int> GetCorrectMasks(int mask, int length) {
+  std::vector<int> answer;
   int now = CreateMask(mask, length, 0);
   if (now >= 0) {
     answer.push_back(now);
@@ -83,10 +54,10 @@ v<int> GetCorrectMasks(int mask, int length) {
 }
 
 void Solve() {
-  Ll height;
-  Ll width;
+  int64_t height;
+  int64_t width;
   std::cin >> height >> width;
-  v<v<char>> field(height, v<char>(width));  // + = 1, - = 0
+  std::vector<std::vector<char>> field(height, std::vector<char>(width));  // + := 1, - := 0
   for (int i = 0; i < height; ++i) {
     for (int j = 0; j < width; ++j) {
       char current;
@@ -94,7 +65,7 @@ void Solve() {
       field[i][j] = current;
     }
   }
-  v<v<Ll>> dp(width, v<Ll>(1 << height, 0));
+  std::vector<std::vector<int64_t>> dp(width, std::vector<int64_t>(1 << height, 0));
   for (int mask = 0; mask < (1 << height); ++mask) {
     if (IsColumnCorrect(field, 0, mask)) {
       dp[0][mask] = 1;
@@ -105,7 +76,7 @@ void Solve() {
       if (!IsColumnCorrect(field, j, mask)) {
         continue;
       }
-      v<int> recalc = GetCorrectMasks(mask, height);
+      std::vector<int> recalc = GetCorrectMasks(mask, height);
       for (auto prev : recalc) {
         if (IsColumnCorrect(field, j - 1, prev)) {
           dp[j][mask] = Sum(dp[j][mask], dp[j - 1][prev]);
@@ -113,7 +84,7 @@ void Solve() {
       }
     }
   }
-  Ll answer = 0;
+  int64_t answer = 0;
   for (int mask = 0; mask < (1 << height); ++mask) {
     answer = Sum(answer, dp.back()[mask]);
   }
@@ -126,7 +97,5 @@ int main() {
   std::cout.tie(nullptr);
   const int kPrecision = 10;
   std::cout << std::fixed << std::setprecision(kPrecision);
-  /*std::freopen("bst.in", "r", stdin);
-  std::freopen("bst.out", "w", stdout);*/
   Solve();
 }
