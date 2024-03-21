@@ -1,56 +1,27 @@
 #include <algorithm>
-#include <bitset>
-#include <chrono>
-#include <cmath>
-#include <cstring>
-#include <deque>
 #include <iomanip>
 #include <iostream>
-#include <map>
-#include <numeric>
-#include <queue>
-#include <random>
-#include <set>
-#include <stack>
-#include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <utility>
 #include <vector>
 
-#define debug(a) std::cerr << #a << ": " << a << '\n';
-#define all(a) (a).begin(), (a).end()
-#define v std::vector
-
-using Ll = long long;
-using Str = std::string;
-using Pll = std::pair<Ll, Ll>;
-
-// const Ll kMax = 1e17;
-const Ll kMin = -1e17;
-// const Ll kMod = 1e9 + 7;
-// const int kMaxn = 1e5;
-// const int kLg = 20;
-
-std::mt19937_64 rnd(
-    std::chrono::steady_clock::now().time_since_epoch().count());
+const int64_t kMin = -1e17;
 
 void Solve() {
-  Ll amount;
-  Ll sum_weight;
+  int amount;
+  int64_t sum_weight;
   std::cin >> amount >> sum_weight;
-  std::vector<Ll> weights(amount);
-  std::vector<Ll> costs(amount);
+  std::vector<int64_t> weights(amount);
+  std::vector<int64_t> costs(amount);
   for (int i = 0; i < amount; ++i) {
     std::cin >> weights[i];
   }
   for (int i = 0; i < amount; ++i) {
     std::cin >> costs[i];
   }
-  std::vector<std::vector<Ll>> dp(amount + 1,
-                                  std::vector<Ll>(sum_weight + 1, kMin));
-  std::vector<std::vector<Ll>> is_taken(amount + 1,
-                                        std::vector<Ll>(sum_weight + 1, 0));
+  std::vector<std::vector<int64_t>> dp(amount + 1,
+                                  std::vector<int64_t>(sum_weight + 1, kMin));
+  std::vector<std::vector<int64_t>> is_taken(amount + 1,
+                                        std::vector<int64_t>(sum_weight + 1, 0));
   dp[0][0] = 0;
   for (int i = 1; i <= amount; ++i) {
     for (int j = 0; j <= sum_weight; ++j) {
@@ -63,16 +34,16 @@ void Solve() {
       }
     }
   }
-  Ll max = kMin;
-  Ll weight = -1;
+  int64_t max = kMin;
+  int64_t weight = -1;
   for (int j = 0; j <= sum_weight; ++j) {
     if (max < dp[amount][j]) {
       max = dp[amount][j];
       weight = j;
     }
   }
-  std::vector<Ll> answer;
-  Ll layer = amount;
+  std::vector<int64_t> answer;
+  int64_t layer = amount;
   while (weight != 0) {
     if (is_taken[layer][weight] != 0) {
       answer.push_back(layer);
@@ -80,7 +51,7 @@ void Solve() {
     }
     --layer;
   }
-  std::reverse(all(answer));
+  std::reverse(answer.begin(), answer.end());
   for (auto now : answer) {
     std::cout << now << '\n';
   }
@@ -92,7 +63,5 @@ int main() {
   std::cout.tie(0);
   const int kPrecision = 10;
   std::cout << std::fixed << std::setprecision(kPrecision);
-  /*std::freopen("bst.in", "r", stdin);
-  std::freopen("bst.out", "w", stdout);*/
   Solve();
 }
