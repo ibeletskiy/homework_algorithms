@@ -1,39 +1,10 @@
 #include <algorithm>
-#include <bitset>
-#include <chrono>
-#include <cmath>
-#include <cstring>
-#include <deque>
 #include <iomanip>
 #include <iostream>
-#include <map>
-#include <numeric>
-#include <queue>
-#include <random>
-#include <set>
-#include <stack>
-#include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <utility>
 #include <vector>
 
-#define debug(a) std::cerr << #a << ": " << a << '\n';
-#define all(a) (a).begin(), (a).end()
-#define v std::vector
-
-using Ll = long long;
-using Str = std::string;
-using Pll = std::pair<int, int>;
-
 const int kMax = 1e8;
-// const int kMin = -1e17;
-// const int kMod = 1e9 + 7;
-// const int kMaxn = 1e5;
-// const int kLg = 20;
-
-std::mt19937_64 rnd(
-    std::chrono::steady_clock::now().time_since_epoch().count());
 
 struct Position {
   int first_len;
@@ -44,7 +15,7 @@ struct Position {
       : first_len(ii), second_len(jj), amount(kk) {}
 };
 
-void Update(Str& first, Str& second, v<v<v<int>>>& dp, Position pos) {
+void Update(std::string& first, std::string& second, std::vector<std::vector<std::vector<int>>>& dp, Position pos) {
   if (pos.first_len == 0 || pos.second_len == 0) {
     if (pos.first_len == 0 && pos.second_len == 0) {
       dp[pos.first_len][pos.second_len][pos.amount] = 0;
@@ -78,13 +49,13 @@ void Update(Str& first, Str& second, v<v<v<int>>>& dp, Position pos) {
 }
 
 void Solve() {
-  Str first;
-  Str second;
+  std::string first;
+  std::string second;
   std::cin >> first >> second;
   int actions;
   std::cin >> actions;
-  v<v<v<int>>> dp(first.size() + 1,
-                  v<v<int>>(second.size() + 1, v<int>(actions + 1, kMax)));
+  std::vector<std::vector<std::vector<int>>> dp(first.size() + 1,
+                  std::vector<std::vector<int>>(second.size() + 1, std::vector<int>(actions + 1, kMax)));
   for (int j = 0; j <= static_cast<int>(second.size()) && j <= actions; ++j) {
     dp[0][j][j] = 0;
   }
@@ -121,7 +92,5 @@ int main() {
   std::cout.tie(nullptr);
   const int kPrecision = 10;
   std::cout << std::fixed << std::setprecision(kPrecision);
-  /*std::freopen("bst.in", "r", stdin);
-  std::freopen("bst.out", "w", stdout);*/
   Solve();
 }
